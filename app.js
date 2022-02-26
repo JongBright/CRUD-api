@@ -34,7 +34,7 @@ app.get('/category/categories/:id', async (req, res) => {
 
 app.post('/category/add', async (req, res) => {
 
-    const { name, description } = req.body
+    const { name, description, image } = req.body
     try {
 
         var date = new Date();
@@ -42,7 +42,7 @@ app.post('/category/add', async (req, res) => {
         var theTime = date.toLocaleTimeString();
         let creationInfo = `${theTime}, ${theDate}`;
 
-        const newCategory = await pool.query("INSERT INTO category (name, description, created_at) VALUES ($1, $2, $3) RETURNING *", [name, description, creationInfo])
+        const newCategory = await pool.query("INSERT INTO category (name, description, image, created_at) VALUES ($1, $2, $3, $4) RETURNING *", [name, description, image, creationInfo])
         res.json(newCategory.rows)
 
     } catch (err) {
@@ -51,13 +51,13 @@ app.post('/category/add', async (req, res) => {
 })
 
 
-app.put('/category/categories/:id', async (req, res) => {
+app.put('/category/update/:id', async (req, res) => {
 
     const { id } = req.params
-    const { name, description } = req.body
+    const { name, description, image } = req.body
     try {
 
-        const updateCategory = await pool.query("UPDATE category SET name =$1, description = $2 WHERE id = $3", [name, description, id])
+        const updateCategory = await pool.query("UPDATE category SET name = $1, description = $2, image = $3 WHERE id = $4", [name, description, image, id])
         res.json(`Category with id ${id} has been updated successfully`)
 
     } catch (err) {
@@ -66,7 +66,7 @@ app.put('/category/categories/:id', async (req, res) => {
 })
 
 
-app.delete('/category/categories/:id', async (req, res) => {
+app.delete('/category/delete/:id', async (req, res) => {
 
     const { id } = req.params
     try {
